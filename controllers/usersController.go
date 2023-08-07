@@ -12,12 +12,26 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type RequestBody struct {
+	Email    string
+	Password string
+}
+
+// SignupTags     godoc
+// @Summary       Sign up Tags
+// @Description   Save tags data in Db.
+// @Produce       application/json
+// @Tags          tags
+// @Success       200 {object} map[string]interface{}
+// @Router        /signup [post]
+// @Param         email    formData  string   true  "User's email"
+// @Param         password formData  string   true  "User's password"
 func Signup(c *gin.Context) {
 	// GET the email/pass from req body
 
 	var body struct {
-		Email    string
-		Password string
+		Email    string `form:"email" binding:"required"`
+		Password string `form:"password" binding:"required"`
 	}
 
 	if c.Bind(&body) != nil {
@@ -53,11 +67,19 @@ func Signup(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+// LoginTags      godoc
+// @Summary       Login Tags
+// @Description   login data.
+// @Produce       application/json
+// @Tags          tags
+// @Success       200 {object} map[string]interface{}
+// @Router        /login [post]
+// @Param         email    formData  string   true  "User's email"
+// @Param         password formData  string   true  "User's password"
 func Login(c *gin.Context) {
-	// GET the email/pass from req body
 	var body struct {
-		Email    string
-		Password string
+		Email    string `form:"email" binding:"required"`
+		Password string `form:"password" binding:"required"`
 	}
 
 	if c.Bind(&body) != nil {
@@ -106,6 +128,15 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+// Validate godoc
+// @Summary Validate user
+// @Description Validate user's authentication.
+// @Produce application/json
+// @Tags authentication
+// @Security ApiKeyAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 401 {object} map[string]interface{}
+// @Router /validation [get]
 func Validate(c *gin.Context) {
 	user, _ := c.Get("user")
 
